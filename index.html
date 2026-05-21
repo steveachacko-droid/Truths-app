@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Truths</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0806;color:#f0ebe0;font-family:'Crimson Pro',serif;font-size:17px;min-height:100vh;}
+:root{--bg:#0a0806;--smoke:#1c1712;--border:#2e2820;--gold:#c9a84c;--gold-dim:#7a6228;--red:#8b1a1a;--red-bright:#c0392b;--parchment:#f0ebe0;--muted:#706050;--faint:#403830;}
+.root{min-height:100vh;background:var(--bg);position:relative;overflow-x:hidden;}
+.root::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(201,168,76,0.04),transparent 60%),radial-gradient(ellipse at 80% 100%,rgba(139,26,26,0.05),transparent 60%);pointer-events:none;z-index:0;}
+.age-gate{position:fixed;inset:0;background:#060402;display:flex;align-items:center;justify-content:center;z-index:200;flex-direction:column;text-align:center;padding:2rem;}
+.age-seal{width:100px;height:100px;border:2px solid var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.6rem;margin:0 auto 2rem;color:var(--red);animation:pulsered 2.5s ease infinite;}
+@keyframes pulsered{0%,100%{box-shadow:0 0 30px rgba(139,26,26,0.3)}50%{box-shadow:0 0 60px rgba(192,57,43,0.6)}}
+.age-title{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.5rem;letter-spacing:.1em;}
+.age-sub{color:var(--muted);font-size:.95rem;max-width:300px;line-height:1.7;margin-bottom:1.5rem;}
+.age-warn{color:var(--red);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2rem;}
+.age-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.btn-enter{background:var(--red);color:#fff;border:none;padding:.85rem 2rem;font-family:'Crimson Pro',serif;font-size:1rem;letter-spacing:.08em;cursor:pointer;transition:all .3s;}
+.btn-enter:hover{background:var(--red-bright);transform:translateY(-2px);}
+.btn-leave{background:transparent;color:var(--faint);border:1px solid var(--faint);padding:.85rem 2rem;font-family:'Crimson Pro',serif;font-size:1rem;cursor:pointer;transition:all .3s;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.modal-box{background:var(--smoke);border:1px solid var(--border);padding:2.5rem;max-width:380px;width:100%;text-align:center;}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.5rem;color:var(--gold);}
+.modal-sub{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;line-height:1.6;}
+.key-display{font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:.15em;color:var(--parchment);background:var(--bg);border:1px solid var(--gold-dim);padding:1rem 1.5rem;margin-bottom:1.5rem;user-select:all;word-break:break-all;}
+.modal-btn{background:var(--gold);color:#000;border:none;padding:.85rem 2rem;font-family:'Crimson Pro',serif;font-size:1rem;letter-spacing:.08em;cursor:pointer;width:100%;transition:all .3s;}
+.modal-btn:hover{background:#e0b855;}
+.login-icon{font-size:3rem;margin-bottom:1.5rem;opacity:.4;}
+.login-title{font-family:'Playfair Display',serif;font-size:1.8rem;letter-spacing:.12em;margin-bottom:.4rem;}
+.login-sub{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;}
+.login-input{background:#14110e;border:1px solid var(--border);color:var(--parchment);font-family:'Crimson Pro',serif;font-size:1.2rem;letter-spacing:.15em;padding:.85rem 1.2rem;width:100%;text-align:center;outline:none;transition:border-color .3s;margin-bottom:.8rem;}
+.login-input:focus{border-color:var(--gold-dim);}
+.login-err{color:var(--red-bright);font-size:.85rem;margin-top:.5rem;letter-spacing:.05em;}
+.cancel-link{background:none;border:none;color:var(--faint);cursor:pointer;font-size:.85rem;letter-spacing:.05em;margin-top:1rem;display:inline-block;}
+.site-header{text-align:center;padding:3rem 1.5rem 1.5rem;position:relative;z-index:1;}
+.site-header::after{content:'';display:block;width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.5rem auto 0;}
+.site-title{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,5.5rem);font-weight:700;letter-spacing:.15em;text-shadow:0 0 80px rgba(201,168,76,0.15);}
+.site-tagline{font-style:italic;color:var(--gold-dim);font-size:.95rem;letter-spacing:.2em;margin-top:.3rem;}
+.admin-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(201,168,76,0.08);border:1px solid var(--gold-dim);color:var(--gold);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .8rem;margin-top:1rem;cursor:pointer;transition:all .3s;}
+.admin-badge:hover{background:rgba(201,168,76,0.15);}
+.tabs{display:flex;justify-content:center;max-width:540px;margin:1.5rem auto;border:1px solid var(--border);overflow:hidden;position:relative;z-index:1;}
+.tab-btn{flex:1;padding:.9rem .3rem;background:transparent;color:var(--faint);font-family:'Crimson Pro',serif;font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;border:none;border-right:1px solid var(--border);cursor:pointer;transition:all .3s;}
+.tab-btn:last-child{border-right:none;}
+.tab-btn.active{background:var(--smoke);color:var(--gold);}
+.tab-btn.chat-active{color:#6ab0d4 !important;}
+.tab-btn:hover:not(.active){background:#14110e;color:var(--parchment);}
+.section{display:none;padding:1.5rem;max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.section.active{display:block;animation:fadein .35s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem;}
+.sec-label{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);letter-spacing:.08em;}
+.sec-count{color:var(--faint);font-size:.8rem;letter-spacing:.05em;}
+.upload-zone{border:1px dashed var(--border);padding:1.8rem;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:1.5rem;background:rgba(255,255,255,.01);position:relative;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--gold-dim);background:rgba(201,168,76,.04);}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon-big{font-size:2.2rem;opacity:.35;margin-bottom:.5rem;}
+.upload-hint{color:var(--muted);font-size:.9rem;line-height:1.6;}
+.upload-hint strong{color:var(--parchment);}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;}
+.empty-msg{text-align:center;padding:3rem 1rem;color:var(--faint);font-style:italic;}
+.media-card{background:var(--smoke);border:1px solid var(--border);position:relative;overflow:hidden;transition:transform .2s,border-color .2s;animation:fadein .3s ease;}
+.media-card:hover{transform:translateY(-3px);border-color:var(--gold-dim);}
+.card-thumb{width:100%;aspect-ratio:1;object-fit:cover;display:block;cursor:pointer;}
+.card-video{width:100%;aspect-ratio:16/9;object-fit:cover;background:#000;}
+.card-file-icon{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:#14110e;color:#503828;cursor:pointer;}
+.card-info{padding:.55rem .65rem;border-top:1px solid var(--border);}
+.card-name{font-size:.75rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-size{font-size:.68rem;color:var(--faint);margin-top:.15rem;}
+.card-del{position:absolute;top:5px;right:5px;width:26px;height:26px;background:rgba(0,0,0,.8);border:1px solid #3a1a1a;color:#c04040;font-size:.75rem;cursor:pointer;display:none;align-items:center;justify-content:center;border-radius:2px;}
+.media-card:hover .card-del{display:flex;}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:400;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:1rem;}
+.lb-close{position:fixed;top:1.2rem;right:1.2rem;background:none;border:1px solid var(--border);color:var(--muted);font-size:1.3rem;cursor:pointer;padding:.35rem .75rem;transition:all .2s;}
+.lb-close:hover{color:var(--parchment);}
+.lb-img{max-width:95vw;max-height:80vh;object-fit:contain;border:1px solid var(--border);}
+.lb-name{margin-top:1rem;color:var(--faint);font-size:.85rem;letter-spacing:.05em;}
+.lb-download{display:inline-block;margin-top:.8rem;padding:.5rem 1.2rem;border:1px solid var(--gold-dim);color:var(--gold);text-decoration:none;font-family:'Crimson Pro',serif;font-size:.9rem;letter-spacing:.08em;}
+.chat-wrap{display:flex;flex-direction:column;height:65vh;max-width:700px;margin:0 auto;}
+.chat-msgs{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.8rem;background:var(--smoke);border:1px solid var(--border);border-bottom:none;}
+.chat-msgs::-webkit-scrollbar{width:4px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border);}
+.chat-msg{display:flex;flex-direction:column;gap:.2rem;}
+.chat-msg-meta{display:flex;align-items:center;gap:.6rem;}
+.chat-msg-name{font-size:.8rem;color:var(--gold-dim);letter-spacing:.05em;}
+.chat-msg-name.is-admin{color:var(--gold);}
+.chat-msg-time{font-size:.7rem;color:var(--faint);}
+.chat-msg-text{color:var(--parchment);font-size:.95rem;line-height:1.5;padding:.5rem .7rem;background:#1a1510;border-left:2px solid var(--border);max-width:85%;}
+.chat-msg-text.is-admin{border-left-color:var(--gold-dim);background:#1f1a10;}
+.chat-del-btn{background:none;border:none;color:var(--red);font-size:.7rem;cursor:pointer;display:none;padding:.1rem .3rem;}
+.chat-msg:hover .chat-del-btn{display:inline;}
+.chat-input-row{display:flex;border:1px solid var(--border);}
+.chat-name-in{background:var(--smoke);border:none;border-right:1px solid var(--border);color:var(--muted);font-family:'Crimson Pro',serif;font-size:.9rem;padding:.75rem .9rem;width:110px;outline:none;}
+.chat-text-in{flex:1;background:var(--smoke);border:none;color:var(--parchment);font-family:'Crimson Pro',serif;font-size:1rem;padding:.75rem .9rem;outline:none;}
+.chat-send{background:var(--smoke);border:none;border-left:1px solid var(--border);color:var(--gold-dim);font-size:1.1rem;padding:.75rem 1rem;cursor:pointer;transition:all .3s;}
+.chat-send:hover{color:var(--gold);background:#1f1a10;}
+.chat-empty{text-align:center;padding:3rem 1rem;color:var(--faint);font-style:italic;}
+.hidden{display:none!important;}
+@media(max-width:480px){
+  .media-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+  .tabs .tab-btn{font-size:.75rem;padding:.8rem .2rem;}
+  .chat-name-in{width:80px;}
+}
+</style>
+</head>
+<body>
+
+<div class="root" id="app" style="display:none">
+
+  <!-- AGE GATE -->
+  <div class="age-gate" id="age-gate">
+    <div class="age-seal">⚠</div>
+    <div class="age-title">Age Verification</div>
+    <div class="age-sub">This site contains adult content. You must be 18 or older to enter.</div>
+    <div class="age-warn">By entering you confirm you are 18+</div>
+    <div class="age-btns">
+      <button class="btn-enter" onclick="enterSite()">I am 18 or older — Enter</button>
+      <button class="btn-leave" onclick="denyEntry()">I am under 18 — Leave</button>
+    </div>
+  </div>
+
+  <!-- LOGOUT MODAL -->
+  <div class="modal-overlay hidden" id="logout-modal">
+    <div class="modal-box">
+      <div class="modal-title">Your Next Key</div>
+      <div class="modal-sub">Copy this before leaving — you'll need it to log in as admin next time.</div>
+      <div class="key-display" id="next-key-display"></div>
+      <button class="modal-btn" onclick="confirmLogout()">I've copied it — Log out</button>
+    </div>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay hidden" id="login-modal">
+    <div class="modal-box">
+      <div class="login-icon">🔑</div>
+      <div class="login-title">Admin Access</div>
+      <div class="login-sub">Enter your access key</div>
+      <input class="login-input" id="login-input" placeholder="Enter key" onkeydown="if(event.key==='Enter')doLogin()" />
+      <button class="modal-btn" onclick="doLogin()">Enter</button>
+      <div class="login-err hidden" id="login-err">Invalid key — try again.</div>
+      <div><button class="cancel-link" onclick="closeLogin()">Cancel</button></div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox hidden" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lb-close" onclick="hideLightbox()">✕</button>
+    <div id="lb-content"></div>
+    <div class="lb-name" id="lb-name"></div>
+  </div>
+
+  <!-- MAIN SITE (hidden until age verified) -->
+  <div id="site-content" class="hidden">
+    <header class="site-header">
+      <div class="site-title">TRUTHS</div>
+      <div class="site-tagline">a place for everything</div>
+      <div style="margin-top:1rem">
+        <button class="admin-badge" id="admin-btn" onclick="adminBtnClick()">🔑 Admin login</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('photos',this)">📷 Photos</button>
+      <button class="tab-btn" onclick="showTab('videos',this)">🎬 Videos</button>
+      <button class="tab-btn" onclick="showTab('files',this)">📁 Files</button>
+      <button class="tab-btn" onclick="showTab('chat',this)">💬 Chat</button>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="section active" id="sec-photos">
+      <div class="sec-header">
+        <span class="sec-label">Photos</span>
+        <span class="sec-count" id="count-photos">0 items</span>
+      </div>
+      <div class="upload-zone hidden" id="upload-photos"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event,'photos')">
+        <input type="file" multiple accept="image/*" onchange="handleInput(event,'photos')">
+        <div class="upload-icon-big">＋</div>
+        <div class="upload-hint"><strong>Tap or drag to upload</strong><br>Photos go here</div>
+      </div>
+      <div class="media-grid" id="grid-photos"></div>
+      <div class="empty-msg" id="empty-photos">Nothing here yet.</div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="section" id="sec-videos">
+      <div class="sec-header">
+        <span class="sec-label">Videos</span>
+        <span class="sec-count" id="count-videos">0 items</span>
+      </div>
+      <div class="upload-zone hidden" id="upload-videos"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event,'videos')">
+        <input type="file" multiple accept="video/*" onchange="handleInput(event,'videos')">
+        <div class="upload-icon-big">＋</div>
+        <div class="upload-hint"><strong>Tap or drag to upload</strong><br>Videos go here</div>
+      </div>
+      <div class="media-grid" id="grid-videos"></div>
+      <div class="empty-msg" id="empty-videos">Nothing here yet.</div>
+    </div>
+
+    <!-- FILES -->
+    <div class="section" id="sec-files">
+      <div class="sec-header">
+        <span class="sec-label">Files</span>
+        <span class="sec-count" id="count-files">0 items</span>
+      </div>
+      <div class="upload-zone hidden" id="upload-files"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event,'files')">
+        <input type="file" multiple onchange="handleInput(event,'files')">
+        <div class="upload-icon-big">＋</div>
+        <div class="upload-hint"><strong>Tap or drag to upload</strong><br>Any file goes here</div>
+      </div>
+      <div class="media-grid" id="grid-files"></div>
+      <div class="empty-msg" id="empty-files">Nothing here yet.</div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="section" id="sec-chat">
+      <div class="sec-header">
+        <span class="sec-label" style="color:#6ab0d4">Public Chat</span>
+        <span class="sec-count" id="count-chat">0 messages</span>
+      </div>
+      <div class="chat-wrap">
+        <div class="chat-msgs" id="chat-msgs">
+          <div class="chat-empty" id="chat-empty">No messages yet.</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-name-in" id="chat-name" placeholder="Name" maxlength="20">
+          <input class="chat-text-in" id="chat-text" placeholder="Write a message…" maxlength="500" onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="chat-send" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /site-content -->
+</div><!-- /app -->
+
+<script>
+const MASTER_KEY = "DARKTRUTH9X4K";
+const STORE_KEY = "truths_v3";
+let store = loadStore();
+let isAdmin = false;
+let nextKeyPending = "";
+let lightboxItem = null;
+
+// ── STORE ──
+function loadStore() {
+  try {
+    const r = localStorage.getItem(STORE_KEY);
+    if (r) {
+      const p = JSON.parse(r);
+      return { currentKey: p.currentKey || MASTER_KEY, photos: p.photos||[], videos: p.videos||[], files: p.files||[], chat: p.chat||[] };
+    }
+  } catch(e){}
+  return { currentKey: MASTER_KEY, photos:[], videos:[], files:[], chat:[] };
+}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch(e){} }
+
+function normalize(s){ return (s||"").toUpperCase().replace(/[\s\-]/g,""); }
+function formatSize(b){ if(b<1024)return b+"B"; if(b<1048576)return(b/1024).toFixed(1)+"KB"; return(b/1048576).toFixed(1)+"MB"; }
+function timeAgo(ts){ const d=Date.now()-ts; if(d<60000)return"just now"; if(d<3600000)return Math.floor(d/60000)+"m ago"; if(d<86400000)return Math.floor(d/3600000)+"h ago"; return Math.floor(d/86400000)+"d ago"; }
+function generateKey(){ const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let k=""; for(let i=0;i<4;i++){for(let j=0;j<4;j++)k+=c[Math.floor(Math.random()*c.length)];if(i<3)k+="-";} return k; }
+
+// ── INIT ──
+document.getElementById("app").style.display = "block";
+if (sessionStorage.getItem("t_age")==="1") showSite();
+
+function showSite(){
+  document.getElementById("age-gate").classList.add("hidden");
+  document.getElementById("site-content").classList.remove("hidden");
+  if(sessionStorage.getItem("t_admin")==="1"){ isAdmin=true; updateAdminUI(); }
+  renderAll();
+  const cn = localStorage.getItem("t_cname");
+  if(cn) document.getElementById("chat-name").value = cn;
+}
+
+// ── AGE GATE ──
+function enterSite(){ sessionStorage.setItem("t_age","1"); showSite(); }
+function denyEntry(){ document.body.innerHTML='<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:#060402;color:#403830;font-family:serif;letter-spacing:.1em;">Access denied.</div>'; }
+
+// ── TABS ──
+function showTab(name, btn){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>{b.classList.remove("active");b.classList.remove("chat-active");});
+  document.getElementById("sec-"+name).classList.add("active");
+  btn.classList.add("active");
+  if(name==="chat"){ btn.classList.add("chat-active"); setTimeout(scrollChat,50); }
+}
+
+// ── ADMIN ──
+function adminBtnClick(){ if(isAdmin) startLogout(); else openLogin(); }
+function updateAdminUI(){
+  const b = document.getElementById("admin-btn");
+  b.textContent = isAdmin ? "👑 Admin — Log out" : "🔑 Admin login";
+  ["photos","videos","files"].forEach(s=>{
+    const u = document.getElementById("upload-"+s);
+    if(isAdmin) u.classList.remove("hidden"); else u.classList.add("hidden");
+  });
+  document.querySelectorAll(".card-del").forEach(d=>{ d.style.display = isAdmin?"":"none"; });
+  document.querySelectorAll(".chat-del-btn").forEach(d=>{ d.style.display = isAdmin?"":"none"; });
+}
+
+function openLogin(){ document.getElementById("login-modal").classList.remove("hidden"); document.getElementById("login-input").value=""; document.getElementById("login-err").classList.add("hidden"); setTimeout(()=>document.getElementById("login-input").focus(),100); }
+function closeLogin(){ document.getElementById("login-modal").classList.add("hidden"); }
+function doLogin(){
+  const typed = normalize(document.getElementById("login-input").value);
+  if(typed===normalize(MASTER_KEY)||typed===normalize(store.currentKey)){
+    sessionStorage.setItem("t_admin","1"); isAdmin=true; updateAdminUI(); closeLogin();
+  } else {
+    document.getElementById("login-err").classList.remove("hidden");
+  }
+}
+
+function startLogout(){
+  nextKeyPending = generateKey();
+  store.currentKey = nextKeyPending; save();
+  document.getElementById("next-key-display").textContent = nextKeyPending;
+  document.getElementById("logout-modal").classList.remove("hidden");
+}
+function confirmLogout(){
+  sessionStorage.removeItem("t_admin"); isAdmin=false; updateAdminUI();
+  document.getElementById("logout-modal").classList.add("hidden");
+}
+
+// ── FILES ──
+function handleInput(e, section){ Array.from(e.target.files).forEach(f=>readFile(f,section)); e.target.value=""; }
+function handleDrop(e, section){ e.preventDefault(); document.getElementById("upload-"+section).classList.remove("drag"); Array.from(e.dataTransfer.files).forEach(f=>readFile(f,section)); }
+
+function readFile(file, section){
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const item = { id: Date.now()+Math.random(), name:file.name, size:formatSize(file.size), type:file.type, data:ev.target.result, ts:Date.now() };
+    store[section].push(item); save();
+    appendCard(item, section);
+    updateCount(section);
+  };
+  reader.readAsDataURL(file);
+}
+
+function deleteItem(id, section){
+  store[section] = store[section].filter(i=>i.id!==id);
+  save();
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if(el) el.remove();
+  updateCount(section);
+}
+
+function updateCount(section){
+  const n = store[section].length;
+  document.getElementById("count-"+section).textContent = n+" item"+(n!==1?"s":"");
+  const empty = document.getElementById("empty-"+section);
+  if(empty) empty.style.display = n>0?"none":"block";
+}
+
+const FILE_ICONS = {PDF:"📄",DOC:"📝",DOCX:"📝",XLS:"📊",XLSX:"📊",ZIP:"📦",RAR:"📦",TXT:"📃",MP3:"🎵",WAV:"🎵"};
+
+function appendCard(item, section){
+  document.getElementById("empty-"+section).style.display="none";
+  const grid = document.getElementById("grid-"+section);
+  const isImg = item.type&&item.type.startsWith("image/");
+  const isVid = item.type&&item.type.startsWith("video/");
+  const ext = (item.name.split(".").pop()||"").toUpperCase();
+  const icon = FILE_ICONS[ext]||"📁";
+  const card = document.createElement("div");
+  card.className="media-card"; card.dataset.id=item.id;
+  let preview = "";
+  if(isImg) preview=`<img class="card-thumb" src="${item.data}" alt="${item.name}" onclick="openLightbox('${item.id}','${section}')">`;
+  else if(isVid) preview=`<video class="card-video" src="${item.data}" controls></video>`;
+  else preview=`<div class="card-file-icon" onclick="openLightbox('${item.id}','${section}')">${icon}</div>`;
+  card.innerHTML=`${preview}
+    <div class="card-info"><div class="card-name" title="${item.name}">${item.name}</div><div class="card-size">${item.size}</div></div>
+    <button class="card-del" style="display:${isAdmin?'flex':'none'}" onclick="deleteItem('${item.id}','${section}')">✕</button>`;
+  grid.appendChild(card);
+}
+
+function renderAll(){
+  ["photos","videos","files"].forEach(section=>{
+    store[section].forEach(item=>appendCard(item,section));
+    updateCount(section);
+  });
+  renderChat();
+}
+
+// ── LIGHTBOX ──
+function openLightbox(id, section){
+  const item = store[section].find(i=>String(i.id)===String(id));
+  if(!item) return;
+  lightboxItem=item;
+  const lb=document.getElementById("lightbox");
+  const content=document.getElementById("lb-content");
+  document.getElementById("lb-name").textContent=item.name;
+  if(item.type&&item.type.startsWith("image/")) content.innerHTML=`<img class="lb-img" src="${item.data}" alt="${item.name}" onclick="event.stopPropagation()">`;
+  else if(item.type&&item.type.startsWith("audio/")) content.innerHTML=`<audio controls src="${item.data}" style="width:300px;margin-top:2rem" onclick="event.stopPropagation()"></audio>`;
+  else content.innerHTML=`<div style="color:var(--muted);text-align:center;padding:2rem" onclick="event.stopPropagation()"><div style="font-size:4rem;margin-bottom:1rem">📁</div><div style="margin-bottom:1.2rem;color:var(--parchment)">${item.name}</div><a class="lb-download" href="${item.data}" download="${item.name}">Download</a></div>`;
+  lb.classList.remove("hidden");
+}
+function closeLightbox(e){ if(e.target===document.getElementById("lightbox")) hideLightbox(); }
+function hideLightbox(){ document.getElementById("lightbox").classList.add("hidden"); document.getElementById("lb-content").innerHTML=""; }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") hideLightbox(); });
+
+// ── CHAT ──
+function renderChat(){
+  const container=document.getElementById("chat-msgs");
+  const empty=document.getElementById("chat-empty");
+  store.chat.forEach(m=>appendMsg(m));
+  empty.style.display=store.chat.length>0?"none":"block";
+  updateCount("chat");
+}
+
+function appendMsg(m){
+  document.getElementById("chat-empty").style.display="none";
+  const container=document.getElementById("chat-msgs");
+  const div=document.createElement("div"); div.className="chat-msg"; div.dataset.mid=m.id;
+  div.innerHTML=`<div class="chat-msg-meta">
+    <span class="chat-msg-name${m.isAdmin?" is-admin":""}">${m.name}${m.isAdmin?" 👑":""}</span>
+    <span class="chat-msg-time">${timeAgo(m.ts)}</span>
+    <button class="chat-del-btn" style="display:${isAdmin?'inline':'none'}" onclick="deleteMsg('${m.id}')">✕</button>
+  </div>
+  <div class="chat-msg-text${m.isAdmin?" is-admin":""}">${escHtml(m.text)}</div>`;
+  container.appendChild(div);
+  scrollChat();
+  const n=store.chat.length;
+  document.getElementById("count-chat").textContent=n+" message"+(n!==1?"s":"");
+}
+
+function escHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function sendMsg(){
+  const text=document.getElementById("chat-text").value.trim();
+  if(!text) return;
+  const name=document.getElementById("chat-name").value.trim()||"Anonymous";
+  localStorage.setItem("t_cname",name);
+  const m={id:Date.now(),name,text,ts:Date.now(),isAdmin};
+  store.chat.push(m); save();
+  appendMsg(m);
+  document.getElementById("chat-text").value="";
+}
+
+function deleteMsg(id){
+  store.chat=store.chat.filter(m=>String(m.id)!==String(id));
+  save();
+  const el=document.querySelector(`[data-mid="${id}"]`);
+  if(el) el.remove();
+  const n=store.chat.length;
+  document.getElementById("count-chat").textContent=n+" message"+(n!==1?"s":"");
+  if(n===0) document.getElementById("chat-empty").style.display="block";
+}
+
+function scrollChat(){ const c=document.getElementById("chat-msgs"); c.scrollTop=c.scrollHeight; }
+</script>
+</body>
+</html>
